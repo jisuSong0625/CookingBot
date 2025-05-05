@@ -1,0 +1,55 @@
+<mujoco model="dual_arm_robot_scene">
+  <include file="omx_dependencies.xml"/>
+
+  <option integrator="implicitfast"/>
+
+  <default>
+    <joint armature="0.1" damping="10.0"/>
+    <position kp="1000" kv="200" forcerange="-100 100"/>
+  </default>
+
+  <statistic center="0.3 0 0.4" extent="1"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="120" elevation="-20"/>
+  </visual>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+    
+    <include file="omx_left.xml"/>
+    <include file="omx_right.xml"/>
+  </worldbody>
+
+  <!-- Exclude contact information -->
+  <contact>
+    <exclude body1="world" body2="omx_left/link2"/>
+    <exclude body1="world" body2="omx_right/link2"/>
+  </contact>
+
+  <!-- Define actuators -->
+  <actuator>
+    <!-- Left arm actuators -->
+    <position name="omx_left/joint1" joint="omx_left/joint1" ctrlrange="-3.142 3.142"/>
+    <position name="omx_left/joint2" joint="omx_left/joint2" ctrlrange="-1.5 1.5"/>
+    <position name="omx_left/joint3" joint="omx_left/joint3" ctrlrange="-1.5 1.4"/>
+    <position name="omx_left/joint4" joint="omx_left/joint4" ctrlrange="-1.7 1.97"/>
+    <position name="omx_left/gripper_joint" joint="omx_left/gripper_left_joint" ctrlrange="-0.01 0.019"/>
+    
+    <!-- Right arm actuators -->
+    <position name="omx_right/joint1" joint="omx_right/joint1" ctrlrange="-3.142 3.142"/>
+    <position name="omx_right/joint2" joint="omx_right/joint2" ctrlrange="-1.5 1.5"/>
+    <position name="omx_right/joint3" joint="omx_right/joint3" ctrlrange="-1.5 1.4"/>
+    <position name="omx_right/joint4" joint="omx_right/joint4" ctrlrange="-1.7 1.97"/>
+    <position name="omx_right/gripper_joint" joint="omx_right/gripper_left_joint" ctrlrange="-0.01 0.019"/>
+  </actuator>
+  
+  <!-- Equality constraints for grippers -->
+  <equality>
+    <joint name="omx_left/equality_gripper" active="true" joint1="omx_left/gripper_left_joint" joint2="omx_left/gripper_right_joint" polycoef="0 1 0 0 0"/>
+    <joint name="omx_right/equality_gripper" active="true" joint1="omx_right/gripper_left_joint" joint2="omx_right/gripper_right_joint" polycoef="0 1 0 0 0"/>
+  </equality>
+</mujoco>
